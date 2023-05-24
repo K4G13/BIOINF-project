@@ -75,8 +75,8 @@ def best_successor(availables,last_el_id,max_score,coverage_matrix):
     else:
         return best
 
-def summary(resault,og_set):
-    print("Summary:")
+def summary(resault,og_set,display=2):
+    print("------------------ Summary: ------------------")
     print(f"Sequence length: \t{resault['seq len']}\t|shoud be: {og_seq_len}")
     print(f"Positive errors: \t{len(resault['positives'])}\t|shoud be: {og_positives}")
     print(f"Negative errors: \t{resault['negatives']}\t|shoud be: {og_negatives}")
@@ -85,14 +85,30 @@ def summary(resault,og_set):
     seq = []
     for i in resault["seq"]: seq.append(og_set[i])
 
-    prev = seq[0]
-    spaces = 0
-    print(seq[0])
-    for el in seq[1:]:
-        spaces += L - coverage(prev,el)
-        for _ in range(spaces): print(" ",end="")
-        print(el)
-        prev = el
+    #display one below another
+    if display==1:
+        prev = seq[0]
+        spaces = 0
+        print(seq[0])
+        for el in seq[1:]:
+            spaces += L - coverage(prev,el)
+            for _ in range(spaces): print(" ",end="")
+            print(el)
+            prev = el
+
+    #display one string
+    if display==2:
+        str = "".join(seq[0])
+        prev = seq[0]
+        for el in seq[1:]:
+            str += el[coverage(prev,el):]
+            prev = el
+        print(str)
+
+    #display sequence elements in list
+    if display==3:
+        print(seq)
+    
 
 data_dir = ""
 if len(sys.argv) >= 2: data_dir = sys.argv[1]
@@ -153,4 +169,4 @@ for starting_el_id in range(len(og_set)):
             break
 
 print()
-summary(best_resault,og_set)
+summary(best_resault,og_set,2)
